@@ -3,6 +3,7 @@
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
+import NavBar from "../components/navbar/page";
 
 
 interface FormData {
@@ -45,14 +46,14 @@ export default function Signin() {
             // reactHotToast.toast.success('Sign in successful');
             router.push('/dashboard');
         } catch (error) {
-            console.error('Error signing in:', error);
+            // console.error('Error signing in:', error);
             // reactHotToast.toast.error('Sign in failed. Please check your credentials.');
             alert('Sign in failed. Please check your credentials.');
         }
     };
     return (
         <>
-           
+           <NavBar/>
             <div className="flex items-center justify-center gap-2 mt-3 mb-3">
                 <h1 className="">Sign in</h1>
             </div>

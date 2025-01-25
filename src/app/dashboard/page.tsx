@@ -1,7 +1,10 @@
+import TopBar from "../components/topbar/page";
 
 export default function Home() {
     return (
         <>
+            <TopBar />
+
             <h1>Hello World</h1>
             <div className="grid grid-cols-2 gap-5 m-3">
                 <div className="card card-side bg-base-100 shadow-xl">

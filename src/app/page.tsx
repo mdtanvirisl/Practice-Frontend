@@ -1,10 +1,12 @@
 
-import Signin from "./signin/page";
+import NavBar from "./components/navbar/page";
 
 export default function Home() {
   return (
     <div>
-      <Signin/>
+      <NavBar />
+
+      <h1>welcome</h1>
     </div>
   );
 }
