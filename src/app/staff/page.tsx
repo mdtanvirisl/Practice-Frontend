@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import TopBar from "../components/topbar/page";
-import StaffCard from '../components/staffcard/page';
 
 export default function Product() {
     const [staffs, setStaffs] = useState([]);
@@ -48,13 +47,41 @@ export default function Product() {
     return (
         <>
             <TopBar />
-            <div className="grid grid-cols-2 gap-5 m-3">
-                {staffs.map((staff: any, index: number) => (
-                    <div key={index}>
-                        <StaffCard data={staff} />
-                    </div>
-                ))}
+            <div className="overflow-x-auto m-3">
+                <table className="table table-zebra w-full">
+                <thead>
+                    <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {staffs.map((staff: any, index: number) => (
+                    <tr key={index}>
+                        <td>
+                        <img
+                            src={'http://localhost:3444/user/getimage/' + staff.filename}
+                            alt="Staff"
+                            className="w-16 h-16 rounded-full"
+                        />
+                        </td>
+                        <td>{staff.name}</td>
+                        <td>{staff.userid}</td>
+                        <td>{staff.username}</td>
+                        <td>{staff.email}</td>
+                        <td>{staff.address}</td>
+                        <td>{staff.role.role}</td>
+                    </tr>
+                    ))}
+                </tbody>
+                </table>
             </div>
-        </>
+            </>
+
     );
 }

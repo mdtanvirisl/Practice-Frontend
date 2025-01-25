@@ -3,6 +3,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import TopBar from "../components/topbar/page";
+import router, { Router } from "next/router";
 
 interface Task {
   id: number;
@@ -40,7 +41,7 @@ export default function ViewTasks() {
         },
       });
       if (response.status === 200) {
-        setTasks(response.data); // Assuming the response contains an array of tasks
+        setTasks(response.data); 
       }
     } catch (error: any) {
       console.error("Error fetching tasks:", error);
@@ -49,8 +50,66 @@ export default function ViewTasks() {
   };
 
   useEffect(() => {
-    fetchTasks(); // Fetch tasks when the component mounts
+    fetchTasks();
   }, []);
+
+  const handleUpdateTask = async (taskId: number, currentStatus: string) => {
+    const token = localStorage.getItem("token");
+    let newStatus = "";
+  
+    // the next status based on the current status
+    if (currentStatus === "Not Started") {
+      newStatus = "In Progress";
+    } else if (currentStatus === "In Progress") {
+      newStatus = "Completed";
+    } else {
+      alert("This task is already completed!");
+      return;
+    }
+  
+    try {
+      const response = await axios.post(
+        `http://localhost:3444/user/updatetask/stutus/${taskId}`, // Updated endpoint
+        { status: newStatus }, // Payload to update the status
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response) {
+        fetchTasks(); // Refresh tasks after update
+        alert(`Task status updated to "${newStatus}" successfully!`);
+      }
+    } catch (error) {
+      console.error("Error updating task:", error);
+      alert("Failed to update task progress. Please try again.");
+    }
+  };
+  
+
+  const handleDeleteTask = async (taskId: number) => {
+    const token = localStorage.getItem("token");
+  
+    try {
+      const response = await axios.delete(`http://localhost:3444/user/deletetask/${taskId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (response.status === 200) {
+        alert("Task deleted successfully!");
+        fetchTasks(); // Refresh the task list
+      } else {
+        alert(response.data.message || "Failed to delete task.");
+      }
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      alert("Failed to delete task. Please try again.");
+    }
+  };
+  
 
   return (
     <>
@@ -79,7 +138,6 @@ export default function ViewTasks() {
                   <td>{task.description}</td>
                   <td>{task.status}</td>
                   <td>
-                    {/* Safely accessing createdBy properties using optional chaining */}
                     {task.createdBy?.name ? (
                       <div className="font-semibold">{task.createdBy.name}</div>
                     ) : (
@@ -88,7 +146,6 @@ export default function ViewTasks() {
                     {task.createdBy?.email && <div>{task.createdBy.email}</div>}
                   </td>
                   <td>
-                    {/* Checking if assignedTo is not null and then rendering assigned users */}
                     {task.assignedTo && task.assignedTo.length > 0 ? (
                       task.assignedTo.map((user) => (
                         <div key={user.userid}>
@@ -99,6 +156,20 @@ export default function ViewTasks() {
                     ) : (
                       <div className="text-gray-500">No assignees</div>
                     )}
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => handleUpdateTask(task.id, task.status)}
+                      className="btn btn-sm btn-primary"
+                    >
+                      Update Progress
+                    </button>
+                    <button
+                      onClick={() => handleDeleteTask(task.id)}
+                      className="btn btn-sm btn-error"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}

@@ -101,6 +101,7 @@ export default function TopBar() {
                 </div>
                 <div className="navbar-center hidden lg:flex">
                     <ul className="menu menu-horizontal px-1">
+                        {/* Render links based on roles */}
                         {hasAccess("Admin") && (
                             <li>
                                 <Link href="/role/">Role</Link>
